@@ -12,8 +12,8 @@ boolean isKeyY = false;
 
 void setup() {
   size(1024, 768);
-  playerA = new Player(new PVector(0.1 * width, 0.5 * height), color(255,0,0));
-  playerB = new Player(new PVector(0.9 * width, 0.5 * height), color(0,0,255));
+  playerA = new Player(true, color(255,0,0));
+  playerB = new Player(false, color(0,0,255));
   ball = new Ball();
 }
 
@@ -39,7 +39,7 @@ void drawScores() {
 }
 
 void advance(float deltaT) {
-  playerA.processInput(deltaT, isKeyA, isKeyY);
+  playerA.processInput(deltaT, mouseY < playerA.position.y, mouseY > playerA.position.y);
   playerB.processInput(deltaT, isKeyUp, isKeyDown);
   playerA.advance(deltaT);
   playerB.advance(deltaT);
@@ -49,24 +49,23 @@ void advance(float deltaT) {
   
   playerA.detectBallCollision(ball);
   playerB.detectBallCollision(ball);
-  ball.detectWindowCollision();
 }
 
 void checkGameOver() {
   if (ball.position.x < 0) {
-    // game over playerA wins
-    playerA.wins++;
+    // game over playerB wins
+    playerB.wins++;
     newGame();
   }
   if (ball.position.x > width) {
-    // game over playerB wins
-    playerB.wins++;
+    // game over playerA wins
+    playerA.wins++;
     newGame();
   }
 }
 
 void newGame() {
-  ball.restartGame();
+  ball.reset();
 }
 
 void keyPressed() {
@@ -77,12 +76,6 @@ void keyPressed() {
     if (keyCode == DOWN) {
       isKeyDown = true;
     } 
-  }
-  if (keyCode == 'A') {
-    isKeyA = true;
-  } 
-  if (keyCode == 'Y') {
-    isKeyY = true;
   } 
 }
   
@@ -95,10 +88,4 @@ void keyReleased() {
       isKeyDown = false;
     } 
   }
-  if (keyCode == 'A') {
-    isKeyA = false;
-  } 
-  if (keyCode == 'Y') {
-    isKeyY = false;
-  } 
 }

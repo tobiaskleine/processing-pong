@@ -7,10 +7,17 @@ class Player extends Moveable{
   float maxVelocity = 400;
   float maxAcceleration = 3000;
   
+  boolean leftPlayer;
+  
   int wins = 0;
 
-  Player(PVector position, color playerColor) {
-    this.position = position;
+  Player(boolean leftPlayer, color playerColor) {
+    this.leftPlayer = leftPlayer;
+    if (leftPlayer) {
+      position = new PVector(0.1*width, 0.5*height);
+    } else {
+      position = new PVector(0.9*width, 0.5*height);
+    }      
     this.playerColor = playerColor;
   }
   
@@ -23,10 +30,12 @@ class Player extends Moveable{
   }
   
   void detectBallCollision(Ball ball) {
-    if (ball.position.x >= position.x - playerWidth/2.0 - ball.radius &&
-        ball.position.x <= position.x + playerWidth/2.0 + ball.radius && 
-        ball.position.y >= position.y - playerHeight/2.0 - ball.radius &&
-        ball.position.y <= position.y + playerHeight/2.0 + ball.radius
+    if (((leftPlayer == true && ball.velocity.x < 0) ||
+         (leftPlayer == false && ball.velocity.x > 0)) &&
+        ball.position.x - ball.radius <= position.x + playerWidth/2.0 && 
+        ball.position.x + ball.radius >= position.x - playerWidth/2.0 && 
+        ball.position.y + ball.radius >= position.y - playerHeight/2.0 &&
+        ball.position.y - ball.radius <= position.y + playerHeight/2.0 
       ) {
       ball.bounce();
     }
