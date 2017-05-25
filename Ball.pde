@@ -1,9 +1,8 @@
 class Ball extends Moveable {
   float radius = 15;
-
-  Ball(PVector position) {
-    this.position = position;
-    velocity = new PVector(250.0,0,0);
+  float initialVelocity = 250;
+  Ball() {
+    restartGame();
   }
   
   void draw() {
@@ -12,6 +11,21 @@ class Ball extends Moveable {
   }
   
   void bounce() {
-    velocity.mult(-1); 
+    velocity.x *= -1; 
+  }
+  
+  void detectWindowCollision() {
+    if (position.y < 0 || position.y > height) {
+      velocity.y *= -1;
+    }
+  }
+  
+  void restartGame() {  
+    position = new PVector(0.5 * width, 0.5 * height);
+    float angle = random(PI*0.8, PI*1.2);
+    if (random(0,1) > 0.5) {
+      angle += PI;
+    }
+    velocity = PVector.fromAngle(angle).mult(initialVelocity);
   }
 }
